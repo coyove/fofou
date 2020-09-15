@@ -34,8 +34,7 @@ func Image(w http.ResponseWriter, r *http.Request) {
 	if rxImageExts.MatchString(file) {
 		if r.FormValue("thumb") == "1" && !strings.HasSuffix(file, ".svg") {
 			path := file + ".thumb.jpg"
-			if fi, err := os.Stat(path); err == nil {
-				common.Ktraffic.Recv(fi.Size())
+			if _, err := os.Stat(path); err == nil {
 				http.ServeFile(w, r, path)
 				return
 			}
@@ -44,7 +43,6 @@ func Image(w http.ResponseWriter, r *http.Request) {
 
 		fi, _ := os.Stat(file)
 		if fi != nil {
-			common.Ktraffic.Recv(fi.Size())
 		}
 		http.ServeFile(w, r, file)
 		return

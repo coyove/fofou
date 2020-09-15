@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/coyove/fofou/markup"
-	"github.com/coyove/goflyway/pkg/trafficmon"
 )
 
 const (
@@ -308,7 +307,7 @@ type ResponseWriterWrapper struct {
 	http.ResponseWriter
 	Code        int
 	ForceFooter bool
-	Survey      *trafficmon.Survey
+	Survey      interface{}
 }
 
 func (r *ResponseWriterWrapper) WriteHeader(code int) {
@@ -318,7 +317,6 @@ func (r *ResponseWriterWrapper) WriteHeader(code int) {
 
 func (r *ResponseWriterWrapper) Write(p []byte) (int, error) {
 	if r.Survey != nil {
-		r.Survey.Recv(int64(len(p)))
 	}
 	return r.ResponseWriter.Write(p)
 }

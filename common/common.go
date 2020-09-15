@@ -6,7 +6,6 @@ import (
 
 	"github.com/coyove/common/lru"
 	"github.com/coyove/fofou/server"
-	"github.com/coyove/goflyway/pkg/trafficmon"
 )
 
 const (
@@ -26,7 +25,6 @@ var (
 	Kprod      bool
 	Kpassword  string
 	Kstart     time.Time
-	Ktraffic   trafficmon.Survey
 )
 
 var TopicFilter1 = func(t *server.Topic) bool { return !strings.HasPrefix(t.Subject, "!!") }

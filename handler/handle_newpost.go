@@ -83,7 +83,7 @@ func PostAPI(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// if user didn't pass the dice test, we will challenge him/her
-	if !common.Kforum.NoRecaptcha && !user.Can(server.PERM_NO_ROLL) && !user.PassRoll() {
+	if false && !user.Can(server.PERM_NO_ROLL) && !user.PassRoll() {
 		_testCount, _ := common.KbadUsers.Get(user.ID)
 		testCount, _ := _testCount.(int)
 		if testCount++; testCount > 10 {

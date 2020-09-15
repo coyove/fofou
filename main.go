@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -91,7 +90,7 @@ func preHandle(fn func(http.ResponseWriter, *http.Request), footer bool) http.Ha
 			return
 		}
 
-		ww := &server.ResponseWriterWrapper{w, http.StatusOK, false, &common.Ktraffic}
+		ww := &server.ResponseWriterWrapper{w, http.StatusOK, false, nil}
 		if !common.Kprod {
 			common.Kforum.Invalidate = time.Now().Unix()
 		}
@@ -113,7 +112,6 @@ func preHandle(fn func(http.ResponseWriter, *http.Request), footer bool) http.Ha
 			}
 			common.Kforum.Notice("%q took %fs to serve", url, duration.Seconds())
 		}
-		common.Ktraffic.Latency(duration.Nanoseconds())
 	}
 }
 
@@ -126,7 +124,6 @@ func main() {
 	flag.Parse()
 	logger := server.NewLogger(1024, 1024, true, common.DATA_LOGS+"f2")
 	common.Kpassword = *salt
-	common.Ktraffic.Init(3600, 10)
 
 	if *salt == testPassword {
 		logger.Notice("you are using the test password/salt, fofou will run in test mode")
@@ -198,8 +195,6 @@ func main() {
 
 	go func() {
 		for range time.Tick(time.Minute) {
-			common.Ktraffic.Update()
-			ioutil.WriteFile(filepath.Join(common.DATA_IMAGES, "traffic.svg"), common.Ktraffic.SVG(300, 50, false).Bytes(), 0755)
 		}
 	}()
 
